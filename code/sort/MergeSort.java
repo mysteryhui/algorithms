@@ -1,0 +1,83 @@
+package sort;
+
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+
+/**
+ * @Author : wanghui
+ * @Date : create on 2017/10/12
+ * @Description: 归并排序
+ */
+public class MergeSort {
+
+
+    public static void main(String[] args)throws Exception{
+
+        int[] a = {1,3,9,5,18,2,24,12};
+        int[] b = mergeSort(a);
+
+        for(int i : b){
+            System.out.println(i);
+        }
+
+    }
+
+    /**
+     * 将给定数组按照从小到大的顺序进行排序
+     * 核心思想：
+     *      1. 对数组进行递归切分，同时进行递归合并
+     *      2. 需要使用额外的空间
+     *
+     * @param array
+     * @return
+     */
+    public static int[] mergeSort(int[] array){
+
+        //一直递归切分数组，直到数组的大小为1
+        if(array.length < 2){
+            return array;
+        }
+
+        //将数组切分，分成2份
+        int arrLength = array.length;
+        int[] leftArr = Arrays.copyOfRange(array,0,arrLength/2);
+        int[] rightArr = Arrays.copyOfRange(array,arrLength/2,arrLength);
+
+        //对递归后的数组进行递归切分
+        int[] sortedLeft = mergeSort(leftArr);
+        int[] sortedRight = mergeSort(rightArr);
+
+        //对排序后的两个数组进行合并
+        int[] sortedArr = new int[sortedLeft.length + sortedRight.length];
+
+        int leftLength = 0;
+        int rightLength = 0;
+        int newArrayIndex = 0;
+
+        //比较两个数组中，较小值的数组，然后将较小的值复制到第三个数组中
+        //因为每次循环都是比较最小值，肯定有一个数组会先到底部，这个时候，就只需要将另外一个数组剩余的部分直接复制到第三个数组中
+        while (sortedLeft.length > leftLength && sortedRight.length > rightLength){
+
+            if(sortedLeft[leftLength] < sortedRight[rightLength]){
+                sortedArr[newArrayIndex] = sortedLeft[leftLength];
+                leftLength++;
+            }else{
+                sortedArr[newArrayIndex] = sortedRight[rightLength];
+                rightLength++;
+            }
+            newArrayIndex++;
+
+        }
+
+        //将剩余数组的内容直接copy到有序数组中
+        if(sortedLeft.length > leftLength){
+            System.arraycopy(sortedLeft,leftLength,sortedArr,newArrayIndex,sortedLeft.length-leftLength);
+        }else if(sortedRight.length > rightLength){
+            System.arraycopy(sortedRight,rightLength,sortedArr,newArrayIndex,sortedRight.length-rightLength);
+        }
+
+        return sortedArr;
+    }
+
+}
